@@ -1,21 +1,31 @@
 
--- Start off by examining the data table and looking at the columns to see what data we're working with. 
+-- Start off by examining the data tables and looking at the columns to see what data we're working with. 
 SELECT *
 FROM dbo.CovidDeaths$
 
--- Limit to certain columns to begin finding trends and relationships.
+SELECT * 
+FROM dbo.CovidVaccinations$
+
+-- Focus on Covid deaths first and limit the columns to begin looking for trends and relationships. 
 
 SELECT Location, date, total_cases, new_cases, total_deaths, population
 FROM dbo.CovidDeaths$
 ORDER BY 1,2
 
--- Looknig at Total Cases vs. Total Deaths in the United States
+-- Looking at Total Cases vs. Total Deaths in the world
 -- Shows likelihood of dying if you contract covid in your country 
+
+SELECT Location, date, total_cases, total_deaths, (Total_deaths/total_cases)*100 AS 'Death Percentage'
+FROM dbo.CovidDeaths$
+ORDER BY 1,2;
+
+-- Looking at Total Cases vs. Total Deaths in the United States
 
 SELECT Location, date, total_cases, total_deaths, (Total_deaths/total_cases)*100 AS 'Death Percentage'
 FROM dbo.CovidDeaths$
 WHERE Location like '%states%'
 ORDER BY 1,2;
+
 
 -- Looking at Total Cases vs. Population
 -- Shows what percentage of population contracted Covid
@@ -32,6 +42,7 @@ GROUP BY location, population
 ORDER BY [Percent Population Infected] desc
 
 -- Looking at the countries with the Highest Amount of Deaths 
+
 SELECT Location, MAX(cast(Total_deaths as int)) as 'Total Death Count'
 FROM dbo.CovidDeaths$
 WHERE continent is not null
